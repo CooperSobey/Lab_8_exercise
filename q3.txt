@@ -1,0 +1,48 @@
+1. Consider your Sprite implementation from the prep. It is implemented in OOP fashion, and it contains all the data
+fields necessary to store and render a sprite as a whole game object.
+
+Which data field of your Sprite is the best candidate to move out into a separate component type in an ECS setup?
+Choose the one that is most likely to apply to things other than sprites. Briefly justify your choice.
+
+As an aside, moving out this data field will mean that a Sprite no longer contains all the information necessary for a
+draw call. Thus, the sprite rendering system will now be responsible for getting all required components before doing
+the draw logic.
+_______________________________________________________________________________________________________________________
+
+1 answer:
+    mTransform would be the best candidate to move out into a separate component in an ECS setup.
+    It is likely other things than just sprites. Scaling and transforming can apply to just about
+    any geometric object we might use making an easily insertable component make the most sense
+    for it.
+
+________________________________________________________________________________________________________________________
+2. Recall from our prep material that when textures have transparency (e.g., are partially transparent), the alpha
+blending compositor is responsible for doing the blending logic. Compositing a source colour onto destination colour
+(where both may not be opaque) is given by:
+
+outputRGB=sourceRGB×sourceA+destinationRGB∗(1−sourceA)
+outputRGB​=sourceRGB​×sourceA​+destinationRGB​∗(1−sourceA​)
+
+outputA=sourceA+destinationA∗(1−sourceA)
+outputA​=sourceA​+destinationA​∗(1−sourceA​)
+
+This operation is not commutative (you can check that swapping source and destination leads to different output in general).
+ In other words, the order in which you render sprites matters.
+
+What does this mean we have to do if we want to render multiple, possibly translucent sprites on top of eachother
+(think of windows with different colour tints stacked on top of eachother)?
+________________________________________________________________________________________________________________________
+
+2 answer:
+    We would have to measure their alphas and organize them. When layering any translucent object,
+    material, etc., we have to make sure the most opaque one is in the back with the most transparent
+    in the front. This is because an object that is more opaque will cover the object that is less opaque
+    making it either nearly invisible or not show up how we want it too. For example if we were to place
+    the transparent object behind the opaque object, then we would not even see the transparent object
+    as the opaque one is blocking it. When we render these objects, we have to make sure we render the
+    opaque textures first meaning that if we are looping through and rendering the textures, the opaque
+    textures most come first in the list while the most transparent comes last ensuring its rendered last,
+    placing it above all the more opaque textures. However, if we have specific foreground and background textures,
+    as in maybe the tint example, we would want the background tints to be rendered first and the foreground after it
+    to make them sit on top and thus more forward meaning we cant strictly order based off alphas but also need to consider
+    where it sits in the scene: foreground, background, or midground.
