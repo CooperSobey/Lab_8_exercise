@@ -7,7 +7,7 @@
 #include <SFML/System/Vector2.hpp>
 
 struct BasicTransform {
-    //basic transform is scale, transform
+    //NOTE: basic transform is (scale, transform)
     // TODO: Determine if possible in general, else provide counterexample:
     // compose(f, g) is equivalent to first applying g, then applying f.
     static BasicTransform compose(const BasicTransform& f, const BasicTransform& g) {
@@ -27,7 +27,7 @@ struct BasicTransform {
         //Has to be one to one and onto:
         //One to one: no two inputs have the same outputs
         //Fails if we have a 0 in the scale. but since we ignore that case it passes one to one
-        //Onto: Every output in codomain is hit
+        //Onto: Every output in codomain is hit. cant think of a place where it fails, look into more
 
         //y-1 = (1/scale) * y + (-transform/scale)
         //      scale var       transform var
