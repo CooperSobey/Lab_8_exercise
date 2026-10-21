@@ -7,15 +7,30 @@
 #include <SFML/System/Vector2.hpp>
 
 struct BasicTransform {
+    //basic transform is scale, transform
     // TODO: Determine if possible in general, else provide counterexample:
     // compose(f, g) is equivalent to first applying g, then applying f.
     static BasicTransform compose(const BasicTransform& f, const BasicTransform& g) {
-        return {};
+        return {sf::Vector2f{f.scale.x * g.scale.x, f.scale.y * g.scale.y}, sf::Vector2f{f.scale.x * g.translation.x + f.translation.x, f.scale.y * g.translation.y + f.translation.y}};
+        //Apply Scale
+        //sf::Vector2f{f.scale.x * g.scale.x, f.scale.y * g.scale.y};
+        //Apply translation
+        //sf::Vector2f{f.scale.x * g.translation.x + f.translation.x, f.scale.y * g.translation.y + f.translation.y};
     };
 
     // TODO: Determine if possible in general, else provide counterexample:
     static BasicTransform inverse(const BasicTransform& f) {
-        return {};
+        return {
+            sf::Vector2f(1/f.scale.x, 1/f.scale.y), sf::Vector2f(-f.translation.x / (1/f.scale.x), -f.translation.y / (1/f.scale.y))
+
+        };
+        //Has to be one to one and onto:
+        //One to one: no two inputs have the same outputs
+        //Fails if we have a 0 in the scale. but since we ignore that case it passes one to one
+        //Onto: Every output in codomain is hit
+
+        //y-1 = (1/scale) * y + (-transform/scale)
+        //      scale var       transform var
     };
 
     constexpr BasicTransform(const sf::Vector2f& scale = {1.f, 1.f},
